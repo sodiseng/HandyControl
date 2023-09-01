@@ -165,38 +165,6 @@ $env:NUGET_EXE_INVOCATION = if ($IsLinux -or $IsMacOS) {
     "`"$NUGET_EXE`""
 }
 
-# Restore tools from NuGet?
-if(-Not $SkipToolPackageRestore.IsPresent) {
-    Push-Location
-    Set-Location $TOOLS_DIR
-
-    # Check for changes in packages.config and remove installed tools if true.
-    [string] $md5Hash = MD5HashFile $PACKAGES_CONFIG
-    if((!(Test-Path $PACKAGES_CONFIG_MD5)) -Or
-    ($md5Hash -ne (Get-Content $PACKAGES_CONFIG_MD5 ))) {
-        Write-Verbose -Message "Missing or changed package.config hash..."
-        Get-ChildItem -Exclude packages.config,nuget.exe,Cake.Bakery |
-        Remove-Item -Recurse -Force
-    }
-
-    Write-Verbose -Message "Restoring tools from NuGet..."
-    
-    $NuGetOutput = Invoke-Expression "& $env:NUGET_EXE_INVOCATION install -ExcludeVersion -OutputDirectory `"$TOOLS_DIR`""
-
-    if ($LASTEXITCODE -ne 0) {
-        Throw "An error occurred while restoring NuGet tools."
-    }
-    else
-    {
-        $md5Hash | Out-File $PACKAGES_CONFIG_MD5 -Encoding "ASCII"
-    }
-    Write-Verbose -Message ($NuGetOutput | Out-String)
-
-    Pop-Location
-}
-
-
-
 
 # Make sure that Cake has been installed.
 if (!(Test-Path $CAKE_EXE)) {
