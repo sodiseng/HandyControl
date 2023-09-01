@@ -1,4 +1,4 @@
-on: workflow_dispatch
+on: [push, pull_request]
 
 jobs:
   push-to-myget:
@@ -14,7 +14,7 @@ jobs:
           include-prerelease: true
         
       - name: setup nuget.exe
-        uses: NuGet/setup-nuget@v1.0.5
+        uses: nuget/setup-nuget@v1
       
       - name: build and push
         shell: pwsh
