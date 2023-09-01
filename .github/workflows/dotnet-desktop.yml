@@ -21,10 +21,9 @@ jobs:
         run: |
           cd build
           .\build.ps1
-          nuget pack build-for-myget.nuspec -version 3.4.0-beta.${env:GITHUB_RUN_NUMBER}
-          $nupkgName = @(gci *.nupkg)[0].Name
+          nuget pack build.nuspec -version 3.4.0-beta.${env:GITHUB_RUN_NUMBER}
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with: 
           name: version-3.40
-          path: build/
+          path: build/*.nupkg
